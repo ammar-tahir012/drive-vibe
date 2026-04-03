@@ -9,35 +9,65 @@ const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
  * These are long (>1hr), uncut, single-perspective drives.
  */
 const VERIFIED_DRIVING_VIDEOS = {
-  'Tokyo': { videoId: 'fkoDgPOFtHY', title: 'Tokyo 4K - Skyline Sunset - Scenic Drive', thumbnail: 'https://i.ytimg.com/vi/fkoDgPOFtHY/hqdefault.jpg', channelName: 'J Utah' },
-  'Paris': { videoId: 'SEiuRZbKFQg', title: 'Midnight Drive in Paris 4K', thumbnail: 'https://i.ytimg.com/vi/SEiuRZbKFQg/hqdefault.jpg', channelName: 'Coucou! Gabrielle' },
-  'New York': { videoId: 'X3JrEGDVKPg', title: '4K HDR Night Drive around New York City', thumbnail: 'https://i.ytimg.com/vi/X3JrEGDVKPg/hqdefault.jpg', channelName: 'Neon Driving Tours' },
-  'London': { videoId: 'lCvWZj_kFgo', title: '4K Driving Tour of London - Scenic City Drive', thumbnail: 'https://i.ytimg.com/vi/lCvWZj_kFgo/hqdefault.jpg', channelName: 'The Travel Docket' },
-  'Dubai': { videoId: 'nUU-pT8uMXQ', title: 'Dubai 4K Day Drive - City Streets & Skyline', thumbnail: 'https://i.ytimg.com/vi/nUU-pT8uMXQ/hqdefault.jpg', channelName: 'Paul Drive' },
-  'Istanbul': { videoId: 'ApWwNvmrX_k', title: '4K-HDR Driving in Istanbul Turkey', thumbnail: 'https://i.ytimg.com/vi/ApWwNvmrX_k/hqdefault.jpg', channelName: 'TR Driver' },
-  'Seoul': { videoId: 'KGAIumGxQeY', title: 'Seoul 4K - Driving Downtown - Skyscraper Sunset', thumbnail: 'https://i.ytimg.com/vi/KGAIumGxQeY/hqdefault.jpg', channelName: 'J Utah' },
+  'tokyo': { videoId: 'fkoDgPOFtHY', title: 'Tokyo 4K Drive', thumbnail: 'https://img.youtube.com/vi/fkoDgPOFtHY/hqdefault.jpg', channelName: 'J Utah' },
+  'paris': { videoId: 'SEiuRZbKFQg', title: 'Paris Midnight 4K', thumbnail: 'https://img.youtube.com/vi/SEiuRZbKFQg/hqdefault.jpg', channelName: 'Coucou! Gabrielle' },
+  'new york': { videoId: 'X3JrEGDVKPg', title: 'NYC Night Drive 4K', thumbnail: 'https://img.youtube.com/vi/X3JrEGDVKPg/hqdefault.jpg', channelName: 'Neon Driving Tours' },
+  'london': { videoId: 'lCvWZj_kFgo', title: 'London City Drive 4K', thumbnail: 'https://img.youtube.com/vi/lCvWZj_kFgo/hqdefault.jpg', channelName: 'The Travel Docket' },
+  'dubai': { videoId: 'nUU-pT8uMXQ', title: 'Dubai City Streets 4K', thumbnail: 'https://img.youtube.com/vi/nUU-pT8uMXQ/hqdefault.jpg', channelName: 'Paul Drive' },
+  'istanbul': { videoId: 'ApWwNvmrX_k', title: 'Istanbul Tour 4K', thumbnail: 'https://img.youtube.com/vi/ApWwNvmrX_k/hqdefault.jpg', channelName: 'TR Driver' },
+  'seoul': { videoId: 'KGAIumGxQeY', title: 'Seoul Downtown 4K', thumbnail: 'https://img.youtube.com/vi/KGAIumGxQeY/hqdefault.jpg', channelName: 'J Utah' },
+  'amsterdam': { videoId: 'nbzU1UuEZVY', title: 'Amsterdam Driving 4K', thumbnail: 'https://img.youtube.com/vi/nbzU1UuEZVY/hqdefault.jpg', channelName: 'Driving POV' },
 };
 
-// Default fallback pool (used when city doesn't match any key above)
+// Default fallback pool
 const DEFAULT_POOL = Object.values(VERIFIED_DRIVING_VIDEOS);
 
-// In-memory cache — same city never burns quota twice
+// In-memory cache
 const cache = {};
-let apiDead = false; // Set to true after first 403 to stop wasting calls
 
+const getApiDead = () => {
+  const deadDate = localStorage.getItem('yt_api_dead_date');
+  const today = new Date().toDateString();
+  return deadDate === today;
+};
+
+const setApiDead = () => {
+  localStorage.setItem('yt_api_dead_date', new Date().toDateString());
+};
+
+/**
+ * Main search function
+ */
 export async function searchDrivingVideos(cityName) {
-  if (cache[cityName]) return cache[cityName];
+  const query = (cityName || '').trim().toLowerCase();
+  console.log(`[DriveVibes] Requesting city: "${query}"`);
 
-  const verifiedVideo = VERIFIED_DRIVING_VIDEOS[cityName];
+  if (cache[query]) return cache[query];
 
-  // If no API key, key is placeholder, or API already returned 403 → skip API entirely
-  if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'your_key_here' || YOUTUBE_API_KEY === '' || apiDead) {
-    if (verifiedVideo) {
-      const result = [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
-      cache[cityName] = result;
-      return result;
-    }
-    return DEFAULT_POOL;
+  // Try to find a verified match
+  const verifiedKey = Object.keys(VERIFIED_DRIVING_VIDEOS).find(key => 
+    query.includes(key) || key.includes(query)
+  );
+  
+  const verifiedVideo = verifiedKey ? VERIFIED_DRIVING_VIDEOS[verifiedKey] : null;
+  if (verifiedVideo) console.log(`[DriveVibes] MATCH FOUND: ${verifiedVideo.title}`);
+
+  const verifiedResult = verifiedVideo ?
+    [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)] :
+    null;
+
+  // Fallback if API is missing or dead
+  if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'your_key_here' || YOUTUBE_API_KEY === '' || getApiDead()) {
+    console.log("[DriveVibes] API disabled/dead. Using fallback.");
+    const result = verifiedResult || DEFAULT_POOL;
+    cache[query] = result;
+    return result;
+  }
+
+  // If verified, use it instantly to save units
+  if (verifiedVideo) {
+    cache[query] = verifiedResult;
+    return verifiedResult;
   }
 
   // Try API with cascading queries
@@ -49,32 +79,23 @@ export async function searchDrivingVideos(cityName) {
 
   for (const { q, duration } of queries) {
     const results = await ytSearch(q, duration);
+
     if (results === 'DEAD') {
-      // API key is dead — stop all future calls
-      apiDead = true;
-      if (verifiedVideo) {
-        const result = [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
-        cache[cityName] = result;
-        return result;
-      }
+      setApiDead();
+      if (verifiedResult) return verifiedResult;
       return DEFAULT_POOL;
     }
+
     if (results.length > 0) {
-      if (verifiedVideo) {
-        const merged = [verifiedVideo, ...results.filter(v => v.videoId !== verifiedVideo.videoId)];
-        cache[cityName] = merged;
-        return merged;
-      }
       cache[cityName] = results;
       return results;
     }
   }
 
   // All searches returned empty
-  if (verifiedVideo) {
-    const result = [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
-    cache[cityName] = result;
-    return result;
+  if (verifiedResult) {
+    cache[cityName] = verifiedResult;
+    return verifiedResult;
   }
   return DEFAULT_POOL;
 }
@@ -89,6 +110,7 @@ async function ytSearch(query, duration) {
 
     const res = await axios.get(BASE_URL, { params });
     if (!res.data.items?.length) return [];
+
     return res.data.items
       .filter(i => i.id?.videoId)
       .map(i => ({
@@ -98,7 +120,9 @@ async function ytSearch(query, duration) {
         channelName: i.snippet.channelTitle,
       }));
   } catch (err) {
+    // 403 Forbidden is usually quota exhausted
     if (err.response?.status === 403) return 'DEAD';
     return [];
   }
 }
+

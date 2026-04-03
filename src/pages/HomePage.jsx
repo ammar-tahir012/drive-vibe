@@ -18,7 +18,7 @@ const HomePage = () => {
     { name: 'Istanbul', code: 'TR', country: 'Turkey' },
     { name: 'Dubai', code: 'AE', country: 'UAE' },
     { name: 'Seoul', code: 'KR', country: 'South Korea' },
-    { name: 'Lagos', code: 'NG', country: 'Nigeria' },
+    { name: 'Amsterdam', code: 'NL', country: 'Netherlands' },
   ];
 
   // Each mood maps to a specific city that matches the vibe
@@ -298,7 +298,7 @@ const HomePage = () => {
       <section id="about" className="bg-[#08080a] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="grid md:grid-cols-2 gap-12 md:gap-20">
-            
+
             {/* Left — About */}
             <div>
               <div className="flex items-center gap-3 mb-6">
@@ -331,7 +331,7 @@ const HomePage = () => {
                 <div className="w-8 sm:w-12 h-px bg-brand-gold" />
                 <span className="text-brand-gold text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase">Developer</span>
               </div>
-              
+
               <div className="mb-8">
                 <h3 className="font-display text-white text-2xl sm:text-3xl mb-1">Ammar Tahir</h3>
                 <p className="text-brand-gold/70 font-body text-sm tracking-wider">Web Developer</p>
@@ -387,9 +387,9 @@ const HomePage = () => {
             <p className="text-white/30 text-[10px] sm:text-xs font-body tracking-widest uppercase">
               DriveVibes © 2026 — All Rights Reserved
             </p>
-            <p className="text-white/20 text-[10px] font-body tracking-wider">
+            {/* <p className="text-white/20 text-[10px] font-body tracking-wider">
               Built with ☕ and late nights by Ammar Tahir
-            </p>
+            </p> */}
           </div>
         </div>
       </section>

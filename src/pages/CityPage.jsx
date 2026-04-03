@@ -162,6 +162,7 @@ const CityPage = () => {
                 disablekb: 1,
                 fs: 0,
                 playsinline: 1,
+                start: 120,        // SKIP FIRST 2 MINUTES (skip intros)
                 vq: 'hd2160',      // Request highest quality (4K)
               },
             }}
