@@ -34,15 +34,23 @@
   }
 }
 
-/* YouTube Sizing Fix */
-#yt-wrapper iframe { 
+/* YouTube Sizing Fix — fills viewport like object-fit:cover */
+#yt-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#yt-wrapper iframe {
   position: absolute !important;
-  top: 50% !important; 
+  top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  width: 100vw !important; 
-  height: 56.25vw !important;
-  min-height: 100vh !important; 
-  min-width: 177.77vh !important;
+  width: 100vw !important;
+  height: 56.25vw !important; /* 16:9 aspect ratio */
+  min-height: 100vh !important;
+  min-width: 177.78vh !important; /* 100vh * 16/9 */
   pointer-events: none !important;
+  border: none !important;
 }
+
