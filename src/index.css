@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply font-body bg-brand-dark text-white;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(232, 201, 122, 0.3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(232, 201, 122, 0.5);
+  }
+
+  /* Selection */
+  ::selection {
+    background: #e8c97a;
+    color: #0c0c0e;
+  }
+}
+
+/* YouTube Sizing Fix */
+#yt-wrapper iframe { 
+  position: absolute !important;
+  top: 50% !important; 
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 100vw !important; 
+  height: 56.25vw !important;
+  min-height: 100vh !important; 
+  min-width: 177.77vh !important;
+  pointer-events: none !important;
+}
