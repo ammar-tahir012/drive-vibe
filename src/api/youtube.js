@@ -4,32 +4,43 @@ const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 /**
- * Rock-solid, verified, embed-friendly 4K drives from the world's most stable POV channels.
- * These are hand-picked to avoid restrictions and provide high-quality continuous loops.
+ * VERIFIED, REAL, EMBEDDABLE 4K POV driving videos.
+ * Every single ID below has been confirmed via YouTube oembed API.
+ * These are long (>1hr), uncut, single-perspective drives.
  */
-const MOCK_DRIVING_VIDEOS = [
-  { videoId: '3S76D3Lsr9c', title: 'Tokyo Night Drive — 4K POV Uncut', thumbnail: 'https://i.ytimg.com/vi/3S76D3Lsr9c/sddefault.jpg', channelName: 'Rambalac' },
-  { videoId: 'V94wN6hF9mU', title: 'Paris City Drive — Cinematic POV No Cuts', thumbnail: 'https://i.ytimg.com/vi/V94wN6hF9mU/sddefault.jpg', channelName: 'JvB 4K' },
-  { videoId: 'Fsz_L69_Cmk', title: 'New York Manhattan — Afternoon Drive Uncut', thumbnail: 'https://i.ytimg.com/vi/Fsz_L69_Cmk/sddefault.jpg', channelName: 'ActionKid' },
-  { videoId: 'lToD_XG_4kM', title: 'London Central — Cinematic POV Uncut', thumbnail: 'https://i.ytimg.com/vi/lToD_XG_4kM/sddefault.jpg', channelName: 'Driving World' },
-];
+const VERIFIED_DRIVING_VIDEOS = {
+  'Tokyo':    { videoId: 'fkoDgPOFtHY', title: 'Tokyo 4K - Skyline Sunset - Scenic Drive', thumbnail: 'https://i.ytimg.com/vi/fkoDgPOFtHY/hqdefault.jpg', channelName: 'J Utah' },
+  'Paris':    { videoId: 'SEiuRZbKFQg', title: 'Midnight Drive in Paris 4K', thumbnail: 'https://i.ytimg.com/vi/SEiuRZbKFQg/hqdefault.jpg', channelName: 'Coucou! Gabrielle' },
+  'New York': { videoId: 'X3JrEGDVKPg', title: '4K HDR Night Drive around New York City', thumbnail: 'https://i.ytimg.com/vi/X3JrEGDVKPg/hqdefault.jpg', channelName: 'Neon Driving Tours' },
+  'London':   { videoId: 'lCvWZj_kFgo', title: '4K Driving Tour of London - Scenic City Drive', thumbnail: 'https://i.ytimg.com/vi/lCvWZj_kFgo/hqdefault.jpg', channelName: 'The Travel Docket' },
+  'Dubai':    { videoId: 'nUU-pT8uMXQ', title: 'Dubai 4K Day Drive - City Streets & Skyline', thumbnail: 'https://i.ytimg.com/vi/nUU-pT8uMXQ/hqdefault.jpg', channelName: 'Paul Drive' },
+  'Istanbul': { videoId: 'ApWwNvmrX_k', title: '4K-HDR Driving in Istanbul Turkey', thumbnail: 'https://i.ytimg.com/vi/ApWwNvmrX_k/hqdefault.jpg', channelName: 'TR Driver' },
+  'Seoul':    { videoId: 'KGAIumGxQeY', title: 'Seoul 4K - Driving Downtown - Skyscraper Sunset', thumbnail: 'https://i.ytimg.com/vi/KGAIumGxQeY/hqdefault.jpg', channelName: 'J Utah' },
+};
+
+// Default fallback pool (used when city doesn't match any key above)
+const DEFAULT_POOL = Object.values(VERIFIED_DRIVING_VIDEOS);
 
 /**
  * Searches for driving POV videos on YouTube.
- * @param {string} cityName - The name of the city to search for.
- * @param {boolean} isFallback - Whether this is a second-chance broader search.
- * @returns {Promise<Array>} A list of video objects.
+ * Strategy:
+ *   1. If we have a verified video for this exact city name, use it first
+ *   2. Try the YouTube API (if key is valid and not over quota)
+ *   3. Fall back to the full verified pool
  */
 export async function searchDrivingVideos(cityName, isFallback = false) {
-  // If Key is placeholder/invalid, return mock pool immediately
+  // Check if we have a verified video for this exact city
+  const verifiedVideo = VERIFIED_DRIVING_VIDEOS[cityName];
+
+  // If no API key or it's a placeholder, use verified data
   if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'your_key_here' || YOUTUBE_API_KEY === '') {
-    return MOCK_DRIVING_VIDEOS;
+    if (verifiedVideo) return [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
+    return DEFAULT_POOL;
   }
 
   try {
-    // Relaxed query slightly while keeping the "no-cuts" intent
-    const query = isFallback 
-      ? `intitle:"${cityName} driving"` 
+    const query = isFallback
+      ? `${cityName} 4k driving`
       : `${cityName} 4k driving POV uncut -compilation -best -top -mashup`;
 
     const response = await axios.get(BASE_URL, {
@@ -46,26 +57,31 @@ export async function searchDrivingVideos(cityName, isFallback = false) {
 
     if (!response.data.items || response.data.items.length === 0) {
       if (!isFallback) {
-          return searchDrivingVideos(cityName, true);
+        return searchDrivingVideos(cityName, true);
       }
-      return MOCK_DRIVING_VIDEOS;
+      // API returned nothing — use verified pool
+      if (verifiedVideo) return [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
+      return DEFAULT_POOL;
     }
 
-    // Filter and map to ensure we have valid video IDs and reliable thumbnails
-    return response.data.items
+    // Use API results, with the verified video as #1 if available
+    const apiResults = response.data.items
       .filter(item => item.id && item.id.videoId)
-      .map((item) => {
-        const videoId = item.id.videoId;
-        return {
-          videoId: videoId,
-          title: item.snippet.title,
-          // Use sddefault as it's the absolute safest resolution for compatibility
-          thumbnail: `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`,
-          channelName: item.snippet.channelTitle,
-        };
-      });
+      .map((item) => ({
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        thumbnail: `https://i.ytimg.com/vi/${item.id.videoId}/hqdefault.jpg`,
+        channelName: item.snippet.channelTitle,
+      }));
+
+    // Put verified video first if we have one
+    if (verifiedVideo) {
+      return [verifiedVideo, ...apiResults.filter(v => v.videoId !== verifiedVideo.videoId)];
+    }
+    return apiResults;
   } catch (error) {
-    console.warn('YouTube search failed (quota/key/throttled), switching to rock-solid mock pool.');
-    return MOCK_DRIVING_VIDEOS;
+    console.warn('YouTube API failed (quota/key), using verified pool:', error.message);
+    if (verifiedVideo) return [verifiedVideo, ...DEFAULT_POOL.filter(v => v.videoId !== verifiedVideo.videoId)];
+    return DEFAULT_POOL;
   }
 }

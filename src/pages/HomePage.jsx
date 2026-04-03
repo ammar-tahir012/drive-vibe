@@ -23,51 +23,51 @@ const HomePage = () => {
   ];
 
   const moods = [
-    { 
-      id: 'night', 
-      title: 'Night Drive', 
-      emoji: '🌃', 
-      desc: 'City lights and neon vibes.', 
+    {
+      id: 'night',
+      title: 'Night Drive',
+      emoji: '🌃',
+      desc: 'City lights and neon vibes.',
       color: 'from-indigo-900/40 to-black',
       keyword: 'night'
     },
-    { 
-      id: 'rain', 
-      title: 'Rainy Cities', 
-      emoji: '🌧️', 
-      desc: 'Cozy, moody, rain-soaked streets.', 
+    {
+      id: 'rain',
+      title: 'Rainy Cities',
+      emoji: '🌧️',
+      desc: 'Cozy, moody, rain-soaked streets.',
       color: 'from-blue-900/40 to-black',
       keyword: 'rain'
     },
-    { 
-      id: 'fast', 
-      title: 'Fast Lane', 
-      emoji: '🏎️', 
-      desc: 'High speed city navigation.', 
+    {
+      id: 'fast',
+      title: 'Fast Lane',
+      emoji: '🏎️',
+      desc: 'High speed city navigation.',
       color: 'from-red-900/40 to-black',
       keyword: 'fast'
     },
-    { 
-      id: 'golden', 
-      title: 'Golden Hour', 
-      emoji: '🌅', 
-      desc: 'Warm sunsets and cinematic glow.', 
+    {
+      id: 'golden',
+      title: 'Golden Hour',
+      emoji: '🌅',
+      desc: 'Warm sunsets and cinematic glow.',
       color: 'from-amber-900/40 to-black',
       keyword: 'golden hour'
     },
-    { 
-      id: 'food', 
-      title: 'Street Food', 
-      emoji: '🍜', 
-      desc: 'Busy markets and local spots.', 
+    {
+      id: 'food',
+      title: 'Street Food',
+      emoji: '🍜',
+      desc: 'Busy markets and local spots.',
       color: 'from-orange-900/40 to-black',
       keyword: 'streets'
     },
-    { 
-      id: 'scenic', 
-      title: 'Scenic Routes', 
-      emoji: '🏔️', 
-      desc: 'Breathtaking natural landscapes.', 
+    {
+      id: 'scenic',
+      title: 'Scenic Routes',
+      emoji: '🏔️',
+      desc: 'Breathtaking natural landscapes.',
       color: 'from-emerald-900/40 to-black',
       keyword: 'scenic'
     },
@@ -110,7 +110,7 @@ const HomePage = () => {
       controls: 0,
       showinfo: 0,
       rel: 0,
-      playlist: 'L6_eSBHxfwI',
+      playlist: 'fkoDgPOFtHY',
       modestbranding: 1,
     },
   };
@@ -127,7 +127,7 @@ const HomePage = () => {
         {/* Background Video Layer */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden scale-110">
           <YouTube
-            videoId="L6_eSBHxfwI"
+            videoId="fkoDgPOFtHY"
             opts={videoOptions}
             onReady={onPlayerReady}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
@@ -136,7 +136,7 @@ const HomePage = () => {
         </div>
 
         {/* Gradient Overlay */}
-        <div 
+        <div
           className="absolute inset-0 z-[1]"
           style={{
             background: 'linear-gradient(to bottom, rgba(12,12,14,0.3) 0%, rgba(12,12,14,0.5) 50%, rgba(12,12,14,1) 100%)'
@@ -148,10 +148,6 @@ const HomePage = () => {
           {/* Animated Badge */}
           <div className="mb-8 p-[1px] rounded-full bg-gradient-to-r from-brand-gold/20 to-transparent animate-fade-up">
             <div className="bg-brand-gold/10 border border-brand-gold/30 rounded-full px-4 py-1.5 flex items-center gap-2">
-              <span className="w-2 h-2 bg-brand-gold rounded-full animate-pulse-gold" />
-              <span className="text-brand-gold text-xs font-body tracking-wider uppercase">
-                Explore Cities Worldwide · Live Radio
-              </span>
             </div>
           </div>
 
@@ -181,7 +177,7 @@ const HomePage = () => {
                 placeholder="Try Tokyo, Paris, Lagos..."
                 className="flex-1 bg-transparent border-none text-white text-lg placeholder:text-white/20 focus:ring-0 font-body"
               />
-              <button 
+              <button
                 className="ml-3 w-10 h-10 rounded-full bg-brand-gold flex items-center justify-center text-brand-dark hover:scale-110 active:scale-95 transition-all duration-300"
                 onClick={() => {
                   if (searchQuery && results[0]) {
@@ -231,7 +227,7 @@ const HomePage = () => {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-0 animate-[fadeUp_0.8s_ease_forwards_1.4s]">
           <span className="text-white/40 text-xs font-body tracking-wider uppercase">Scroll to explore</span>
           <div className="w-1 h-5 rounded-full bg-white/10 relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-1/2 bg-brand-gold/60 animate-bounce transition-all" />
+            <div className="absolute top-0 left-0 w-full h-1/2 bg-brand-gold/60 animate-bounce transition-all" />
           </div>
         </div>
       </section>
@@ -245,10 +241,10 @@ const HomePage = () => {
         <p className="text-white/40 text-sm font-body tracking-widest uppercase mb-12 ml-16">
           Most explored cities this week
         </p>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {trendingCities.map((city) => (
-            <CityCard 
+            <CityCard
               key={city.name}
               cityName={city.name}
               countryCode={city.code}
