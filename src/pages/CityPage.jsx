@@ -177,6 +177,10 @@ const CityPage = () => {
         style={{ background: 'radial-gradient(circle, transparent 30%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.7) 100%)' }}
       />
 
+      {/* Mobile tap zones for prev/next (hidden on sm+) */}
+      <div className="absolute left-0 top-16 bottom-20 w-16 z-[2] sm:hidden" onClick={handlePrevVideo} />
+      <div className="absolute right-0 top-16 bottom-20 w-16 z-[2] sm:hidden" onClick={handleNextVideo} />
+
       {/* Top Bar — responsive */}
       <header className="absolute top-0 left-0 right-0 z-20 bg-black/40 backdrop-blur-xl border-b border-white/5 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors group shrink-0">

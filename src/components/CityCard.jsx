@@ -70,14 +70,14 @@ const CityCard = ({ cityName, countryCode, countryName }) => {
       </div>
 
       {/* Bottom Text Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6">
-        <div className="flex flex-col gap-1">
-          <h3 className="font-display text-white text-xl md:text-2xl leading-tight group-hover:text-brand-gold transition-colors">
+      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6">
+        <div className="flex flex-col gap-0.5 sm:gap-1">
+          <h3 className="font-display text-white text-base sm:text-xl md:text-2xl leading-tight group-hover:text-brand-gold transition-colors">
             {cityName}
           </h3>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-brand-gold rounded-full animate-pulse" />
-            <span className="text-white/50 text-[10px] font-body uppercase tracking-widest">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-brand-gold rounded-full animate-pulse" />
+            <span className="text-white/50 text-[8px] sm:text-[10px] font-body uppercase tracking-widest">
               {countryName}
             </span>
           </div>

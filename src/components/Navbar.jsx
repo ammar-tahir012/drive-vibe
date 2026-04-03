@@ -59,13 +59,13 @@ const Navbar = () => {
           <path d="M19.07 4.93L4.93 19.07"></path>
         </svg>
       </div>
-      <span className="font-display italic text-2xl text-brand-gold">DriveVibes</span>
+      <span className="font-display italic text-xl sm:text-2xl text-brand-gold">DriveVibes</span>
     </Link>
   );
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-[#0c0c0e]/85 backdrop-blur-[24px] border-b border-white/5 px-6 py-4">
+      <nav className="sticky top-0 z-50 w-full bg-[#0c0c0e]/85 backdrop-blur-[24px] border-b border-white/5 px-4 sm:px-6 py-3 sm:py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left: Logo */}
           <Logo />
@@ -128,10 +128,10 @@ const Navbar = () => {
 
       {/* Search Overlay */}
       {isSearchOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-xl flex flex-col items-center pt-32 px-6">
+        <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl flex flex-col items-center pt-20 sm:pt-32 px-4 sm:px-6">
           <button
             onClick={() => setIsSearchOpen(false)}
-            className="absolute top-8 right-8 p-2 text-white/60 hover:text-white transition-colors"
+            className="absolute top-4 right-4 sm:top-8 sm:right-8 p-2 text-white/60 hover:text-white transition-colors"
           >
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -146,7 +146,7 @@ const Navbar = () => {
               placeholder="Search any city..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent border-none text-white text-3xl md:text-5xl placeholder:text-white/20 focus:ring-0 font-display text-center"
+              className="w-full bg-transparent border-none text-white text-2xl sm:text-3xl md:text-5xl placeholder:text-white/20 focus:ring-0 focus:outline-none font-display text-center"
             />
             <div className="mt-4 h-[2px] w-full bg-white/10 overflow-hidden">
                <div className={`h-full bg-brand-gold transition-all duration-500 ease-in-out ${searchQuery ? 'w-full' : 'w-0'}`} />
@@ -180,7 +180,7 @@ const Navbar = () => {
       {/* Mobile Drawer */}
       <div className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isDrawerOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsDrawerOpen(false)}>
         <div 
-          className={`absolute right-0 top-0 h-full w-64 bg-surface shadow-2xl transition-transform duration-300 transform ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute right-0 top-0 h-full w-64 bg-[#0c0c0e] border-l border-white/5 shadow-2xl transition-transform duration-300 transform ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
           onClick={e => e.stopPropagation()}
         >
           <div className="p-6 flex flex-col gap-8">

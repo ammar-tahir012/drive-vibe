@@ -1,35 +1,35 @@
 import axios from 'axios';
 
-const GEODB_API_KEY = import.meta.env.VITE_GEODB_API_KEY;
-const BASE_URL = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
-
 /**
- * Searches for cities using GeoDB Cities API.
- * @param {string} query - The city name prefix.
+ * Free city search using Open-Meteo Geocoding API.
+ * No API key required. No rate limits.
+ * Returns city name, country, and country code for any city worldwide.
+ * 
+ * @param {string} query - The city name to search for.
  * @returns {Promise<Array>} A list of city objects.
  */
 export async function searchCities(query) {
   try {
-    const response = await axios.get(BASE_URL, {
+    const response = await axios.get('https://geocoding-api.open-meteo.com/v1/search', {
       params: {
-        namePrefix: query,
-        limit: 8,
-        sort: '-population',
-      },
-      headers: {
-        'X-RapidAPI-Key': GEODB_API_KEY,
-        'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
+        name: query,
+        count: 8,
+        language: 'en',
       },
     });
 
-    return response.data.data.map((city) => ({
-      city: city.city,
-      country: city.country,
-      countryCode: city.countryCode,
-      population: city.population,
-    }));
+    if (!response.data.results) return [];
+
+    return response.data.results
+      .filter(r => r.feature_code !== 'AIRP') // exclude airports
+      .map((result) => ({
+        city: result.name,
+        country: result.country,
+        countryCode: result.country_code,
+        population: result.population || 0,
+      }));
   } catch (error) {
-    console.error('GeoDB Cities search failed:', error);
+    console.error('City search failed:', error);
     return [];
   }
 }
