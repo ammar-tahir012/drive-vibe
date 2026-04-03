@@ -73,13 +73,14 @@ const Navbar = () => {
           {/* Center: Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path || (link.path !== '/' && location.hash === link.path.split('#')[1]);
+              const isActive = (link.path === '/' && location.pathname === '/' && !location.hash) || 
+                               (link.path.includes('#') && location.hash === `#${link.path.split('#')[1]}`);
               return (
                 <Link
                   key={link.name}
                   to={link.path}
                   className={`relative font-body text-sm transition-colors duration-300 ${
-                    isActive ? 'text-brand-gold' : 'text-white/60 hover:text-white'
+                    isActive ? 'text-brand-gold font-bold' : 'text-white/60 hover:text-white'
                   }`}
                 >
                   {link.name}

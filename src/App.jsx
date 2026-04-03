@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToHash from './components/ScrollToHash';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import CityPage from './pages/CityPage';
@@ -8,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage';
 function App() {
   return (
     <Router>
+      <ScrollToHash />
       <div className="min-h-screen bg-brand-dark text-white font-body selection:bg-brand-gold selection:text-brand-dark overflow-x-hidden">
         <Navbar />
         <Routes>
